@@ -1,0 +1,166 @@
+/* GENEL BUTONLAR */
+.btn-primary { background-color: var(--primary-color); color: white; padding: 12px 20px; border: none; border-radius: var(--radius); cursor: pointer; font-weight: 600; transition: var(--transition); width: 100%; }
+.btn-primary:hover { background-color: var(--primary-hover); transform: translateY(-2px); }
+.btn-secondary { background-color: transparent; border: 2px solid var(--primary-color); color: var(--primary-color); padding: 8px 16px; border-radius: var(--radius); cursor: pointer; font-weight: 600; transition: var(--transition); }
+.btn-secondary:hover { background-color: var(--primary-color); color: white; }
+.btn-danger { background-color: transparent; border: 1px solid var(--danger); color: var(--danger); padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; transition: var(--transition); }
+.btn-danger:hover { background-color: var(--danger); color: white; }
+
+/* KARTLAR */
+.card { background: var(--card-bg); border-radius: 16px; padding: 20px; box-shadow: var(--shadow); transition: var(--transition); border: 1px solid transparent; position: relative; overflow: hidden; display: flex; flex-direction: column; }
+.card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); border-color: rgba(79, 70, 229, 0.3); }
+.card-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px; }
+.card-title { font-size: 1.25rem; font-weight: 600; color: var(--text-main); }
+.card-badge { background: rgba(79, 70, 229, 0.1); color: var(--primary-color); padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+.class-code { background: rgba(0,0,0,0.03); padding: 8px; border-radius: 8px; font-family: monospace; font-size: 1.1rem; text-align: center; margin: 15px 0; border: 1px dashed var(--border-color); color: var(--text-muted); }
+.assignment-meta { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-muted); margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border-color); }
+.btn-complete { width: 100%; margin-top: 15px; background-color: transparent; border: 1px solid var(--border-color); color: var(--text-muted); padding: 8px; border-radius: 8px; cursor: pointer; }
+.btn-complete:hover { border-color: var(--success); color: var(--success); }
+.card.completed { border: 1px solid var(--success); opacity: 0.8; }
+.card.completed .card-badge { background-color: rgba(16, 185, 129, 0.1); color: var(--success); }
+.card.overdue { border: 1px solid var(--danger); }
+.card.overdue .card-badge { background-color: rgba(239, 68, 68, 0.1); color: var(--danger); }
+
+/* ROZETLER (BADGES) */
+.badge-status { padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; }
+.badge-success { background-color: rgba(16, 185, 129, 0.1); color: #10b981; }
+.badge-pending { background-color: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+.badge-danger { background-color: rgba(239, 68, 68, 0.1); color: #ef4444; }
+
+/* MODALLAR (PENCERELER VE DÜZELTİLMİŞ ÇARPI İŞARETİ) */
+.modal { display: none; position: fixed; z-index: 9999 !important; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); backdrop-filter: blur(4px); align-items: center; justify-content: center; }
+.modal-content { background-color: var(--card-bg); color: var(--text-main); padding: 30px; border-radius: 20px; width: 100%; max-width: 450px; position: relative; animation: slideUp 0.3s ease; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
+.modal-content h3 { margin-top: 0 !important; margin-bottom: 25px !important; padding-right: 40px; } /* X ile çakışmayı önler */
+
+.close {
+    position: absolute; top: 25px !important; right: 25px !important; z-index: 10 !important;
+    width: 36px; height: 36px; background: rgba(0, 0, 0, 0.05); display: flex; align-items: center; justify-content: center;
+    border-radius: 50%; font-size: 18px; cursor: pointer; transition: 0.25s ease; color: var(--text-muted);
+}
+.close:hover { background: rgba(239, 68, 68, 0.12); color: var(--danger); transform: scale(1.08); }
+[data-theme="dark"] .close { background: rgba(255, 255, 255, 0.08); color: var(--text-muted); }
+[data-theme="dark"] .close:hover { background: rgba(239, 68, 68, 0.18); color: #ff7a7a; }
+
+.student-list-wrapper { margin-top: 15px; max-height: 300px; overflow-y: auto; }
+.student-list-item { padding: 12px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+
+/* HIZLI İŞLEM (+) BUTONU - FAB */
+.fab-container { position: fixed; bottom: 30px; right: 30px; z-index: 1000; display: flex; flex-direction: column; align-items: center; }
+.fab { width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-color), var(--primary-hover)); color: white; font-size: 24px; border: none; box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4); cursor: pointer; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center; justify-content: center; }
+.fab.open { transform: rotate(45deg); background: var(--card-bg); color: var(--primary-color); border: 2px solid var(--primary-color); box-shadow: none; }
+.fab-options { display: flex; flex-direction: column; gap: 15px; position: absolute; bottom: 70px; right: 2px; align-items: flex-end; opacity: 0; pointer-events: none; transform: translateY(20px); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.fab-options.open { opacity: 1; pointer-events: all; transform: translateY(0); }
+.fab-option-wrapper { display: flex; align-items: center; gap: 12px; }
+.fab-label { background: var(--card-bg); color: var(--text-main); padding: 6px 14px; border-radius: 10px; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 1px solid var(--border-color); white-space: nowrap; cursor: pointer;}
+.fab-option { width: 48px; height: 48px; border-radius: 50%; background: var(--card-bg); color: var(--primary-color); border: 1px solid var(--border-color); box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: flex; justify-content: center; align-items: center; font-size: 1.1rem; cursor: pointer; transition: var(--transition); }
+.fab-option:hover, .fab-option-wrapper:hover .fab-option { transform: scale(1.1); color: white; background: var(--primary-color); }
+
+/* ÖZEL KARTLAR VE İSTATİSTİKLER */
+.card.urgent { border: 1px solid var(--warning); background: linear-gradient(to right, rgba(245, 158, 11, 0.05), transparent); }
+.pulse-badge { background-color: var(--warning) !important; color: white !important; animation: pulseWarning 2s infinite; }
+.btn-urgent { background-color: var(--warning); color: white; border: none; font-weight: bold; }
+.btn-urgent:hover { background-color: #d97706; color: white; }
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 25px; }
+.stat-card { background: var(--card-bg); padding: 25px 20px; border-radius: 20px; text-align: center; box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05); border: 1px solid var(--border-color); transition: var(--transition); cursor: pointer; position: relative; overflow: hidden; }
+.stat-card:hover { transform: translateY(-5px); border-color: var(--primary-color); }
+.stat-card i { font-size: 2.5rem; color: var(--primary-color); margin-bottom: 15px; opacity: 0.9;}
+.stat-value { font-size: 2rem; font-weight: 800; color: var(--text-main); line-height: 1; margin-bottom: 5px;}
+.stat-label { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;}
+/* TIKLA VE GÖR ANİMASYONU */
+.stat-card::after { content: 'Tıkla ve Gör'; position: absolute; bottom: -30px; left: 0; width: 100%; background: var(--primary-color); color: white; font-size: 0.75rem; padding: 4px 0; transition: var(--transition); opacity: 0; }
+.stat-card:hover::after { bottom: 0; opacity: 1; }
+.segmented-control { display: flex; background: rgba(0,0,0,0.04); border-radius: 14px; padding: 5px; margin-bottom: 25px; border: 1px solid var(--border-color); }
+.segment-btn { flex: 1; text-align: center; padding: 12px; border-radius: 10px; border: none; background: transparent; color: var(--text-muted); font-weight: 600; cursor: pointer; transition: all 0.3s ease; font-size: 0.95rem; }
+.segment-btn.active { background: var(--card-bg); color: var(--primary-color); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+.teacher-class-card { padding: 0; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; }
+.tcc-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+.tcc-title-area { display: flex; flex-direction: column; gap: 5px; }
+.tcc-title { font-size: 1.25rem; font-weight: bold; color: var(--text-main); }
+.tcc-students { display: inline-flex; align-items: center; gap: 5px; background: rgba(79, 70, 229, 0.15); color: var(--primary-color); padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; width: fit-content; }
+.btn-icon-danger { background: transparent; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; transition: 0.2s; }
+.btn-icon-danger:hover { color: var(--danger); transform: scale(1.1); }
+
+/* ÖĞRETMEN KARTI - ORİJİNAL BİREBİR TASARIM */
+/* ÖĞRETMEN KARTI - KUSURSUZ VE SIKIŞTIRILMIŞ TASARIM */
+.teacher-class-card { padding: 0; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; }
+.tcc-header { display: flex; justify-content: space-between; align-items: flex-start; padding: 20px 20px 10px 20px; }
+.tcc-title { font-size: 1.25rem; font-weight: 700; color: var(--text-main); line-height: 1.2;}
+.tcc-students { font-size: 0.75rem; color: var(--primary-color); background: var(--primary-light); padding: 4px 10px; border-radius: 12px; margin-top: 8px; display: inline-block; font-weight: 600;}
+.btn-icon-danger { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem; transition: var(--transition); padding: 5px; }
+.btn-icon-danger:hover { color: var(--danger); transform: scale(1.1); }
+.tcc-code-area { background: rgba(0,0,0,0.02); margin: 10px 20px; padding: 12px 15px; border-radius: 12px; border: 1px dashed var(--border-color); display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: var(--transition); }
+[data-theme="dark"] .tcc-code-area { background: rgba(255,255,255,0.02); }
+.tcc-code-area:hover { background: var(--primary-light); border-color: var(--primary-color); }
+.tcc-code-label { font-size: 0.7rem; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px;}
+.tcc-code { font-size: 1.2rem; letter-spacing: 2px; color: var(--primary-color); font-family: monospace; display: flex; align-items: center; gap: 8px;}
+.tcc-actions { padding: 10px 20px 20px 20px; display: flex; flex-direction: column; gap: 10px; }
+.btn-tcc-primary { background: var(--primary-color); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: var(--transition); display: flex; justify-content: center; align-items: center; gap: 8px;}
+.btn-tcc-primary:hover { background: var(--primary-hover); transform: translateY(-2px);}
+.tcc-action-row { display: flex; gap: 10px; }
+.btn-tcc-secondary { flex: 1; background: transparent; border: 1px solid var(--primary-color); color: var(--primary-color); padding: 10px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: var(--transition); display: flex; justify-content: center; align-items: center; gap: 8px; font-size: 0.85rem;}
+.btn-tcc-secondary:hover { background: var(--primary-light); border-color: var(--text-muted); }
+.btn-tcc-add { flex: 1; background: transparent; border: 1px dashed var(--primary-color); color: var(--primary-color); padding: 10px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: var(--transition); display: flex; justify-content: center; align-items: center; gap: 8px; font-size: 0.85rem;}
+.btn-tcc-add:hover { background: var(--primary-light); }
+
+
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes pulseWarning { 0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); } 70% { box-shadow: 0 0 0 8px rgba(245, 158, 11, 0); } 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); } }
+
+@media (max-width: 768px) {
+    .card { padding: 18px; border-radius: 20px; }
+    .btn-secondary, .btn-primary, .btn-complete, .btn-danger { padding: 12px; }
+    .modal { align-items: flex-end; padding: 0; }
+    .modal-content { width: 100%; max-width: 100%; margin: 0; border-radius: 24px 24px 0 0; padding: 25px 20px 40px 20px; animation: slideUpMobile 0.4s cubic-bezier(0.175, 0.885, 0.32, 1) forwards; }
+    @keyframes slideUpMobile { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    .close { top: 20px !important; right: 25px !important; }
+    .fab-container { bottom: 85px; right: 15px; }
+    .fab { width: 50px; height: 50px; font-size: 22px; }
+    .segment-btn { padding: 10px 4px; font-size: 0.8rem; }
+}
+
+/* --- PROFİL AYARLARI ÖZEL TASARIMI --- */
+.settings-section { margin-bottom: 15px; }
+.settings-title { font-size: 0.85rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; }
+.settings-divider { border: 0; border-top: 1px dashed var(--border-color); margin: 25px 0; opacity: 0.5; }
+
+/* GitHub & Notion Tarzı Danger Zone */
+.danger-zone { 
+    background: rgba(239, 68, 68, 0.05); 
+    padding: 20px; 
+    border-radius: 16px; 
+    border: 1px dashed rgba(239, 68, 68, 0.4); 
+    transition: var(--transition);
+}
+.danger-zone:hover { background: rgba(239, 68, 68, 0.08); border-style: solid; }
+[data-theme="dark"] .danger-zone { background: rgba(239, 68, 68, 0.1); }
+
+/* =====================================================
+   PROFİL AYARLARI - MOBİL (TELEFON) UYUMU
+   ===================================================== */
+@media (max-width: 768px) {
+    /* 1. İsim ve Soyisim kutularını mobilde yan yana değil, alt alta (ferah) göster */
+    #form-update-profile > div:first-child {
+        flex-direction: column !important;
+        gap: 15px !important;
+    }
+
+    /* 2. Ayarlar penceresi ekrana sığmazsa kaydırılabilir (scroll) yap */
+    #modal-profile-settings .modal-content {
+        max-height: 90vh; /* Ekran boyunun en fazla %90'ı kadar uza */
+        overflow-y: auto; /* İçerik taşarsa kaydırma çubuğu çıkar */
+        padding: 30px 20px 40px 20px !important;
+    }
+
+    /* 3. Parmakla dokunmayı kolaylaştırmak için butonları kalınlaştır (Touch Target) */
+    .settings-section .btn-secondary, 
+    .settings-section .btn-danger {
+        padding: 14px !important;
+        font-size: 1.05rem !important;
+    }
+
+    /* 4. Tehlikeli Bölge'nin (Danger Zone) boşluklarını dar ekranlara göre sıkıştır */
+    .danger-zone {
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+}

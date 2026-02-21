@@ -1,0 +1,49 @@
+:root {
+    --primary-color: #6366f1; 
+    --primary-hover: #4f46e5;
+    --primary-light: rgba(99, 102, 241, 0.1);
+    --bg-color: #f8fafc;
+    --sidebar-bg: #ffffff;
+    --card-bg: #ffffff;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+    --input-bg: #ffffff;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444; 
+    --radius: 16px; 
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    height: 100vh;
+    overflow: hidden;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* UTILITIES */
+.hidden { display: none !important; }
+.hidden-section { display: none !important; }
+.active-section { display: flex; }
+
+/* TOAST BİLDİRİMLERİ */
+#toast-container { position: fixed; top: 20px; right: 20px; z-index: 999; }
+.toast {
+    background: var(--card-bg); color: var(--text-main); padding: 15px 20px;
+    border-radius: 10px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px; display: flex; align-items: center; gap: 10px;
+    animation: slideInRight 0.3s ease; border-left: 4px solid var(--primary-color);
+}
+.toast.success { border-left-color: var(--success); }
+.toast.error { border-left-color: var(--danger); }
+@keyframes slideInRight { from { transform: translateX(100%); } to { transform: translateX(0); } }
+
+@media (max-width: 768px) {
+    #toast-container { top: 15px; left: 50%; right: auto; transform: translateX(-50%); width: 90%; display: flex; flex-direction: column; align-items: center; }
+    .toast { width: 100%; justify-content: center; }
+}

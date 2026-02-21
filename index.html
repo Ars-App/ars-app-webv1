@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A.R.S App | Sınıf Yönetim Sistemi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./css/auth.css">
+    <link rel="stylesheet" href="./css/base.css">
+    <link rel="stylesheet" href="./css/components.css">
+    <link rel="stylesheet" href="./css/layout.css">
+    <link rel="stylesheet" href="./css/theme.css">
+</head>
+<body>
+
+    <div id="toast-container"></div>
+
+    <section id="auth-section" class="active-section">
+        <div class="auth-container">
+            <div class="auth-header">
+                <h1>A.R.S App</h1>
+                <p>Yeni nesil sınıf ve ödev yönetim platformu</p>
+            </div>
+            
+            <div id="login-form-container" class="auth-box">
+                <h2>Giriş Yap</h2>
+                <form id="login-form">
+                    <div class="input-group">
+                        <i class="fa-solid fa-user"></i>
+                        <input type="text" id="login-username" placeholder="Kullanıcı Adı" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="login-password" placeholder="Şifre" required>
+                        <i class="fa-solid fa-eye toggle-password" id="btn-toggle-login-pwd"></i>
+                    </div>
+                    <button type="submit" class="btn-primary">Giriş Yap</button>
+                </form>
+                <p class="switch-auth">Hesabın yok mu? <a href="#" id="link-to-register">Kayıt Ol</a></p>
+            </div>
+
+            <div id="register-form-container" class="auth-box hidden">
+                <h2>Kayıt Ol</h2>
+                <form id="register-form">
+                    <div class="role-selector">
+                        <label class="radio-label">
+                            <input type="radio" name="role" value="teacher" id="role-teacher" checked>
+                            <span class="radio-custom"><i class="fa-solid fa-chalkboard-user"></i> Öğretmen</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="role" value="student" id="role-student">
+                            <span class="radio-custom"><i class="fa-solid fa-graduation-cap"></i> Öğrenci</span>
+                        </label>
+                    </div>
+
+                    <div class="row">
+                        <div class="input-group">
+                            <input type="text" id="reg-name" placeholder="Ad" required>
+                        </div>
+                        <div class="input-group">
+                            <input type="text" id="reg-surname" placeholder="Soyad" required>
+                        </div>
+                    </div>
+
+                    <div class="input-group" id="student-no-group" style="display: none;">
+                        <input type="text" id="reg-student-no" placeholder="Öğrenci Numarası">
+                    </div>
+
+                    <div class="input-group">
+                        <input type="text" id="reg-username" placeholder="Kullanıcı Adı" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="reg-password" placeholder="Şifre" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="reg-password-confirm" placeholder="Şifreyi Onayla" required>
+                    </div>
+
+                    <button type="submit" class="btn-primary">Hesap Oluştur</button>
+                </form>
+                <p class="switch-auth">Zaten üye misin? <a href="#" id="link-to-login">Giriş Yap</a></p>
+            </div>
+        </div>
+    </section>
+
+    <section id="dashboard-section" class="hidden-section">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-wrapper"><div class="logo-icon-bg"><i class="fa-solid fa-layer-group"></i></div></div>
+                <div class="brand-info"><div class="brand-title"><span>A.R.S</span> <span class="highlight">App</span></div><div class="brand-tag">Beta v1.0</div></div>
+            </div>
+
+            <div class="profile-card" id="btn-profile-settings"> 
+                <div class="profile-avatar-wrapper"><div class="profile-avatar" id="user-avatar">AD</div><div class="status-indicator"></div></div>
+                <div class="profile-info"><h4 id="user-fullname">Yükleniyor...</h4><div class="role-badge-wrapper"><span id="user-role-badge" class="role-tag">Öğretmen</span></div></div>
+                <div class="profile-action-icon"><i class="fa-solid fa-gear"></i></div>
+            </div>
+
+            <nav class="nav-menu">
+                <p class="menu-label">MENÜ</p>
+                <a href="#" class="nav-item active" id="nav-home">
+                    <div class="nav-icon"><i class="fa-solid fa-chart-pie"></i></div><span class="nav-text">Özet Tablosu</span>
+                </a>
+                <a href="#" class="nav-item" id="nav-classes" style="display: none;">
+                    <div class="nav-icon"><i class="fa-solid fa-chalkboard"></i></div><span class="nav-text">Sınıflarım</span>
+                </a>
+                <a href="#" class="nav-item" id="nav-assignments" style="display: none;">
+                    <div class="nav-icon"><i class="fa-solid fa-book-open"></i></div><span class="nav-text">Ödevlerim</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <p class="menu-label">TERCİHLER</p>
+                <div class="footer-item theme-row">
+                    <div class="row-left"><i class="fa-solid fa-moon" id="sidebar-theme-icon"></i><span id="sidebar-theme-text">Karanlık Mod</span></div>
+                    <div id="theme-switch-wrapper"></div> 
+                </div>
+                
+                <div class="footer-item logout-row" id="btn-logout">
+                    <div class="row-left"><i class="fa-solid fa-right-from-bracket" style="color: var(--danger);"></i><span style="color: var(--danger);">Çıkış Yap</span></div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <h2 id="page-title">Dashboard</h2>
+                <p class="date-text" id="current-date" style="font-size: 0.9rem; color: #64748b; margin-top: -5px; font-weight: 500;">Tarih yükleniyor...</p>
+                <div class="actions" id="header-actions"></div>
+            </header>
+            <div id="content-area"></div>
+        </main>
+    </section>
+
+    <div id="fab-container" class="fab-container hidden">
+        <div class="fab-options" id="fab-options"></div>
+        <button id="fab-button" class="fab"><i class="fa-solid fa-plus" id="fab-icon"></i></button>
+    </div>
+
+    <div id="modal-create-class" class="modal">
+        <div class="modal-content">
+            <span class="close btn-close-modal" data-target="modal-create-class">&times;</span>
+            <h3>Yeni Sınıf Oluştur</h3>
+            <form id="create-class-form">
+                <div class="input-group"><input type="text" id="class-name" placeholder="Sınıf Adı (Örn: Matematik 101)" required></div>
+                <button type="submit" class="btn-primary">Oluştur</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-join-class" class="modal">
+        <div class="modal-content">
+            <span class="close btn-close-modal" data-target="modal-join-class">&times;</span>
+            <h3>Sınıfa Katıl</h3>
+            <form id="join-class-form">
+                <div class="input-group"><input type="text" id="class-code-input" placeholder="Sınıf Kodu (Örn: XY92A)" required></div>
+                <button type="submit" class="btn-primary">Katıl</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-add-assignment" class="modal">
+        <div class="modal-content">
+            <span class="close btn-close-modal" data-target="modal-add-assignment">&times;</span>
+            <h3>Yeni Ödev Ekle</h3>
+            <form id="add-assignment-form">
+                <div class="input-group" id="assignment-class-group">
+                    <select id="assignment-class-select" required style="width: 100%; padding: 12px; border-radius: 16px; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-main); font-weight: 600;"></select>
+                </div>
+                <div class="input-group"><input type="text" id="assignment-title" placeholder="Ödev Başlığı" required></div>
+                <div class="input-group"><textarea id="assignment-desc" placeholder="Ödev Açıklaması..." rows="4" required></textarea></div>
+                <div class="input-group">
+                    <label style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 5px; display: block;">Son Teslim Tarihi:</label>
+                    <input type="date" id="assignment-date" required>
+                </div>
+                <button type="submit" class="btn-primary">Ödevi Yayınla</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-student-list" class="modal">
+        <div class="modal-content">
+            <span class="close btn-close-modal" data-target="modal-student-list">&times;</span>
+            <h3>Kayıtlı Öğrenciler</h3>
+            <div id="student-list-content" class="student-list-wrapper"></div>
+        </div>
+    </div>
+
+    <div id="modal-assignment-details" class="modal">
+        <div class="modal-content">
+            <span class="close btn-close-modal" data-target="modal-assignment-details">&times;</span>
+            <h3 id="detail-title">Ödev Durumu</h3>
+            <div id="assignment-detail-content" class="student-list-wrapper"></div>
+        </div>
+    </div>
+
+    <div id="modal-profile-settings" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <span class="close btn-close-modal" data-target="modal-profile-settings">&times;</span>
+            <h3><i class="fa-solid fa-user-gear" style="color: var(--primary-color); margin-right: 10px;"></i> Profil Ayarları</h3>
+            
+            <div class="settings-section">
+                <h4 class="settings-title">Kişisel Bilgiler</h4>
+                <form id="form-update-profile">
+                    <div style="display: flex; gap: 15px;">
+                        <div class="input-group" style="flex: 1;"><input type="text" id="set-name" placeholder="Ad" required></div>
+                        <div class="input-group" style="flex: 1;"><input type="text" id="set-surname" placeholder="Soyad" required></div>
+                    </div>
+                    <button type="submit" class="btn-secondary" style="width: 100%;"><i class="fa-solid fa-floppy-disk"></i> Bilgileri Güncelle</button>
+                </form>
+            </div>
+
+            <hr class="settings-divider">
+
+            <div class="settings-section">
+                <h4 class="settings-title">Güvenlik (Şifre Değiştirme)</h4>
+                <form id="form-update-password">
+                    <div class="input-group"><input type="password" id="set-new-password" placeholder="Yeni Şifre" required></div>
+                    <div class="input-group"><input type="password" id="set-new-password-confirm" placeholder="Yeni Şifre (Tekrar)" required></div>
+                    <button type="submit" class="btn-secondary" style="width: 100%;"><i class="fa-solid fa-key"></i> Şifreyi Güncelle</button>
+                </form>
+            </div>
+
+            <hr class="settings-divider">
+
+            <div class="settings-section danger-zone">
+                <h4 class="settings-title" style="color: var(--danger);"><i class="fa-solid fa-triangle-exclamation"></i> Tehlikeli Bölge</h4>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Hesabınızı sildiğinizde tüm verileriniz kalıcı olarak silinir. Bu işlem geri alınamaz.</p>
+                <button type="button" class="btn-danger" id="btn-modal-delete-account" style="width: 100%; padding: 12px; font-weight: bold; font-size: 1rem; border: 2px solid var(--danger);"><i class="fa-solid fa-trash-can"></i> Hesabımı Kalıcı Olarak Sil</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="theme-toggle-component" class="toggle-switch">
+        <input type="checkbox" id="theme-checkbox">
+        <label for="theme-checkbox" class="toggle-label">
+            <i class="fa-solid fa-sun sun-icon"></i>
+            <i class="fa-solid fa-moon moon-icon"></i>
+            <span class="toggle-ball"></span>
+        </label>
+    </div>
+
+    
+    <script type="module" src="./js/main.js"></script>
+</body>
+</html>
