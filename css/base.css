@@ -2,17 +2,26 @@
     --primary-color: #6366f1; 
     --primary-hover: #4f46e5;
     --primary-light: rgba(99, 102, 241, 0.1);
-    --bg-color: #f8fafc;
-    --sidebar-bg: #ffffff;
-    --card-bg: #ffffff;
-    --text-main: #0f172a;
+    
+    /* YENİ: Aydınlık Mod Derinlik Ayarları */
+    --bg-color: #f1f5f9;         /* Arka planı hafif tatlı bir gri-mavi yaptık ki beyaz kartlar öne çıksın */
+    --sidebar-bg: #ffffff;       /* Menü bembeyaz ve ferah */
+    --card-bg: #ffffff;          /* Kartlar bembeyaz */
+    
+    /* YENİ: Metin ve Kutu Ayarları */
+    --text-main: #1e293b;        /* Tam siyah yerine göz yormayan tok lacivert-gri */
     --text-muted: #64748b;
-    --border-color: #e2e8f0;
-    --input-bg: #ffffff;
+    --border-color: #e2e8f0;     /* Zarif sınır çizgileri */
+    --input-bg: #f8fafc;         /* Kartların içinde kutuların belli olması için hafif buzlu beyaz */
+    
     --success: #10b981;
     --warning: #f59e0b;
     --danger: #ef4444; 
     --radius: 16px; 
+    
+    /* İŞTE EKSİK OLAN SİHİR: Aydınlık moda özel yumuşak, premium 3D gölge efekti */
+    --shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.05); 
+    
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -21,8 +30,8 @@
 body {
     background-color: var(--bg-color);
     color: var(--text-main);
-    height: 100vh;
-    overflow: hidden;
+    min-height: 100vh;  /* DİKKAT: height yerine min-height yaptık */
+    overflow-x: hidden; /* DİKKAT: overflow: hidden yazısını sildik, sadece x (yatay) kilitledik */
     transition: background-color 0.3s, color 0.3s;
 }
 

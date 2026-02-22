@@ -11,9 +11,9 @@
 }
 
 /* TEMA BUTONU TASARIMI */
-.theme-toggle-auth-pos { position: fixed; top: 20px; right: 20px; z-index: 1000; }
+.theme-toggle-auth-pos { position: absolute; top: 20px; right: 20px; z-index: 1000; }
 .toggle-switch { position: relative; width: 60px; height: 30px; }
-.auth-toggle-pos { position: fixed; top: 20px; right: 20px; z-index: 1000; transform: scale(1.1); }
+.auth-toggle-pos { position: absolute; top: 20px; right: 20px; z-index: 1000; transform: scale(1.1); }
 #theme-checkbox { display: none; }
 .toggle-label {
     display: flex; align-items: center; justify-content: space-between;
