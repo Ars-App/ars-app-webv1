@@ -5,7 +5,7 @@
     overflow: hidden; /* Dışarı taşmaları engeller */
 }
 
-/* --- YENİ: ŞIK VE MODERN SCROLLBAR (KAYDIRMA ÇUBUĞU) --- */
+/* --- YENİ: ŞIK VE MODERN SCROLLBAR (KAYDIRMA ÇUBUĞU)  --- */
 ::-webkit-scrollbar {
     width: 8px; /* Çubuğun inceliği */
     height: 8px;
