@@ -281,7 +281,7 @@ export function openAddAssignmentModal(classId = null, event = null) {
     }
 
     document.getElementById('assignment-title').value = '';
-    document.getElementById('assignment-desc').value = '';
+    document.getElementById('questionCount').value = '';
     document.getElementById('assignment-date').value = ''; 
     document.getElementById('modal-add-assignment').style.display = 'flex';
 }
@@ -351,16 +351,28 @@ export async function openAssignmentDetailsModal(assignmentId) {
     if (studentsInClass.length === 0) {
         container.innerHTML = '<p style="color:var(--text-muted);">Bu sınıfta hiç öğrenci yok.</p>';
     } else {
-        let html = '<ul style="list-style:none;">';
+        let html = '<ul style="list-style:none; padding:0;">';
         studentsInClass.forEach(student => {
             const submission = submissions.find(s => s.studentId === student.id);
             let badge = '';
+            let statsHtml = ''; // YENİ: İstatistikleri tutacağımız değişken
+
             if (submission) {
-                // YENİ: Eğer öğrenci muafsa Gri Muaf rozeti göster
                 if (submission.status === 'exempt') {
                     badge = '<span class="badge-status" style="background: rgba(100,116,139,0.1); color: #64748b;"><i class="fa-solid fa-minus"></i> Muaf</span>';
                 } else {
                     badge = '<span class="badge-status badge-success"><i class="fa-solid fa-check"></i> Tamamlandı</span>';
+                    
+                    // YENİ: Eğer öğrencinin istatistiği varsa alt kısma şık bir bar ekliyoruz
+                    if (submission.stats) {
+                        statsHtml = `
+                        <div style="font-size: 0.85rem; margin-top: 12px; display: flex; gap: 15px; background: rgba(0,0,0,0.03); padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-color);">
+                            <span style="color: var(--success);" title="Doğru"><i class="fa-solid fa-circle-check"></i> ${submission.stats.correct}</span>
+                            <span style="color: var(--danger);" title="Yanlış"><i class="fa-solid fa-circle-xmark"></i> ${submission.stats.wrong}</span>
+                            <span style="color: var(--text-muted);" title="Boş"><i class="fa-solid fa-minus"></i> ${submission.stats.blank}</span>
+                            <strong style="color: var(--primary-color); margin-left: auto;">Başarı: %${submission.stats.successRate}</strong>
+                        </div>`;
+                    }
                 }
             }
             else {
@@ -369,10 +381,18 @@ export async function openAssignmentDetailsModal(assignmentId) {
                 if (due && due < today) badge = '<span class="badge-status badge-danger"><i class="fa-solid fa-clock"></i> Süresi Doldu</span>';
                 else badge = '<span class="badge-status badge-pending"><i class="fa-solid fa-hourglass-start"></i> Bekliyor</span>';
             }
+            
+            // YENİ: li etiketine display:block verip içerikleri alt alta estetikçe dizdik
             html += `
-            <li class="student-list-item">
-                <div><strong>${student.name} ${student.surname}</strong><br><small style="color:var(--text-muted);">No: ${student.studentNo || '-'}</small></div>
-                <div>${badge}</div>
+            <li class="student-list-item" style="display: block; padding: 15px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <strong>${student.name} ${student.surname}</strong>
+                        <br><small style="color:var(--text-muted);">No: ${student.studentNo || '-'}</small>
+                    </div>
+                    <div>${badge}</div>
+                </div>
+                ${statsHtml}
             </li>`;
         });
         html += '</ul>';
@@ -380,7 +400,6 @@ export async function openAssignmentDetailsModal(assignmentId) {
     }
     document.getElementById('modal-assignment-details').style.display = 'flex';
 }
-
 // YENİ: Ödev Silme Fonksiyonu
 export function deleteAssignment(assignmentId, classId) {
     if(!confirm('Bu ödevi ve öğrencilerin bu ödeve ait tüm teslim kayıtlarını silmek istediğinize emin misiniz?')) return;
