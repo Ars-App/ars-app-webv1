@@ -21,8 +21,16 @@ import {
     openAssignmentDetailsModal,
     deleteAssignment
 } from './teacherViews.js';
-import { renderStudentDashboard, submitAssignment, openJoinClassModal } from './studentViews.js';
-
+import { renderStudentDashboard, openCompleteModal, saveTaskStats, 
+    openJoinClassModal, leaveClass } from './studentViews.js';
+// adminViews.js'den gelen tüm fonksiyonları eksiksiz içe aktarıyoruz
+// adminViews.js import satırını aynen böyle güncelle:
+import { 
+    renderAdminDashboard, renderUserManagement, renderClassOversight, 
+    changeViewMode, exitImpersonation, filterAdminUsers, 
+    openUserDetailsModal, resetUserPassword, deleteUserAsAdmin, deleteClassAsAdmin,
+    renderAssignmentOversight, deleteAssignmentAsAdmin 
+} from './adminViews.js';
 // ---- GLOBAL PENCEREYE (WINDOW) BAĞLAMA ----
 window.toggleDarkMode = toggleDarkMode;
 window.togglePassword = togglePassword;
@@ -33,7 +41,6 @@ window.showToast = showToast;
 window.renderDashboardHome = renderDashboardHome;
 window.renderTeacherClassesList = renderTeacherClassesList;
 window.renderStudentDashboard = renderStudentDashboard;
-window.submitAssignment = submitAssignment;
 window.logout = DataManager.logout;
 window.syncDataToLocal = syncDataToLocal;
 window.deleteAccount = deleteAccount;
@@ -57,7 +64,26 @@ window.deleteAssignment = deleteAssignment;
 
 // Öğrenci Fonksiyonları
 window.openJoinClassModal = openJoinClassModal;
+window.leaveClass = leaveClass;
+// window.submitAssignment = submitAssignment; // BUNU SİL, YERİNE ŞUNLARI YAZ:
+window.openCompleteModal = openCompleteModal;
+window.saveTaskStats = saveTaskStats;
+//Admin fonksiyonları
 
+// ---- GLOBAL PENCEREYE (WINDOW) BAĞLAMA ----
+// O bölüme in ve admin window atamalarını aynen şu şekilde eksiksiz tamamla:
+window.renderAdminDashboard = renderAdminDashboard;
+window.renderUserManagement = renderUserManagement;
+window.renderClassOversight = renderClassOversight;
+window.changeViewMode = changeViewMode;
+window.exitImpersonation = exitImpersonation;
+window.filterAdminUsers = filterAdminUsers;
+window.openUserDetailsModal = openUserDetailsModal;
+window.resetUserPassword = resetUserPassword;
+window.deleteUserAsAdmin = deleteUserAsAdmin;
+window.deleteClassAsAdmin = deleteClassAsAdmin;
+window.renderAssignmentOversight = renderAssignmentOversight;
+window.deleteAssignmentAsAdmin = deleteAssignmentAsAdmin;
 
 // ---- HTML ELEMENTLERİNİN TIKLAMA OLAYLARINI (EVENTS) BAĞLAMA ----
 function setupHTMLListeners() {
@@ -150,6 +176,16 @@ function setupHTMLListeners() {
     });
 
     // 6. Sol Menü Linkleri
+    // admin
+    // Admin Linkleri
+    const navAdminDash = document.getElementById('nav-admin-dashboard');
+    const navAdminUsers = document.getElementById('nav-admin-users');
+    const navAdminClasses = document.getElementById('nav-admin-classes');
+
+    if (navAdminDash) navAdminDash.addEventListener('click', (e) => { e.preventDefault(); window.renderAdminDashboard(); });
+    if (navAdminUsers) navAdminUsers.addEventListener('click', (e) => { e.preventDefault(); window.renderUserManagement(); });
+    if (navAdminClasses) navAdminClasses.addEventListener('click', (e) => { e.preventDefault(); window.renderClassOversight(); });
+    // öğretmen ve öğrenci
     const navHome = document.getElementById('nav-home');
     const navClasses = document.getElementById('nav-classes');
     const navAssignments = document.getElementById('nav-assignments');
@@ -184,9 +220,12 @@ function setupHTMLListeners() {
 
         const assignments = DataManager.getAssignments();
         const newAsg = {
-            id: generateId(), classId: finalClassId,
-            title: document.getElementById('assignment-title').value, description: document.getElementById('assignment-desc').value,
-            dueDate: document.getElementById('assignment-date').value, createdAt: new Date().toLocaleDateString()
+            id: generateId(), 
+            classId: finalClassId,
+            title: document.getElementById('assignment-title').value, 
+            questionCount: parseInt(document.getElementById('questionCount').value) || 0, // YENİ: Soru sayısını kaydet
+            dueDate: document.getElementById('assignment-date').value, 
+            createdAt: new Date().toLocaleDateString()
         };
         assignments.push(newAsg); DataManager.setAssignments(assignments);
         window.closeModal('modal-add-assignment');
@@ -257,21 +296,55 @@ window.onclick = function(event) {
 
 // ---- ANA UYGULAMA MANTIĞI VE BAŞLATICI ----
 function initApp() {
+    // --- GEÇİCİ GOD MODE KODU ---
+    let allUsers = DataManager.getUsers();
+    let myAdmin = allUsers.find(u => u.username === "admin"); // Kendi kullanıcı adın "admin" ise böyle kalsın
+    if (myAdmin && myAdmin.role !== "admin") {
+        myAdmin.role = "admin";
+        DataManager.setUsers(allUsers); // Buluta fırlat!
+    }
+    // ----------------------------
+
     const dateOpts = { weekday: 'long', day: 'numeric', month: 'long' };
     const dateStr = new Date().toLocaleDateString('tr-TR', dateOpts);
     const dateEl = document.getElementById('current-date');
     if(dateEl) dateEl.textContent = dateStr;
     
     initTheme(); 
-    const user = DataManager.getCurrentUser();
+    const realUser = DataManager.getCurrentUser();
+    let user = realUser; // İşlem görecek kullanıcı
     const fabContainer = document.getElementById('fab-container');
     const fabIcon = document.getElementById('fab-icon');
     
-    if (!user) {
+    if (!realUser) {
         moveThemeButton('auth'); 
         document.getElementById('auth-section').classList.add('active-section');
         document.getElementById('dashboard-section').classList.remove('active-section');
         if(fabContainer) fabContainer.classList.add('hidden');
+        return;
+    }
+
+    // --- SİHİR: ADMIN IMPERSONATION (TEST MODU) KONTROLÜ ---
+    if (realUser.role === 'admin') {
+        const viewMode = localStorage.getItem('adminViewMode') || 'admin';
+        document.getElementById('admin-view-switcher').style.display = 'flex';
+        document.getElementById('view-mode-select').value = viewMode;
+
+        if (viewMode !== 'admin') {
+            // Admin başka bir kılığa girdi!
+            document.getElementById('impersonation-banner').style.display = 'block';
+            document.getElementById('impersonate-role-name').textContent = viewMode === 'teacher' ? 'Öğretmen' : 'Öğrenci';
+            user = { ...realUser, role: viewMode }; // Sisteme sahte bir rol veriyoruz
+        } else {
+            // Gerçek Admin modunda
+            document.getElementById('impersonation-banner').style.display = 'none';
+        }
+    }
+
+    // --- YASAKLI KULLANICI (BAN) KONTROLÜ ---
+    if (user.status === 'banned' && user.role !== 'admin') {
+        window.showToast("Hesabınız sistem yöneticisi tarafından askıya alınmıştır.", "error");
+        DataManager.logout();
         return;
     }
 
@@ -281,36 +354,59 @@ function initApp() {
     document.getElementById('dashboard-section').classList.remove('hidden-section');
     document.getElementById('dashboard-section').classList.add('active-section');
 
-    document.getElementById('user-fullname').textContent = `${user.name} ${user.surname}`;
-    const initials = (user.name.charAt(0) + user.surname.charAt(0)).toUpperCase();
-    document.getElementById('user-avatar').textContent = initials;
-    document.getElementById('user-role-badge').textContent = user.role === 'teacher' ? 'Öğretmen' : 'Öğrenci';
+    document.getElementById('user-fullname').textContent = `${realUser.name} ${realUser.surname}`; // İsim hep gerçek kalır
+    document.getElementById('user-avatar').textContent = (realUser.name.charAt(0) + realUser.surname.charAt(0)).toUpperCase();
+    
+    // Rozet rengi ve ismini ayarla
+    let badgeText = user.role === 'teacher' ? 'Öğretmen' : (user.role === 'student' ? 'Öğrenci' : 'Sistem Yöneticisi');
+    let badgeColor = user.role === 'admin' ? '#f59e0b' : (user.role === 'teacher' ? 'var(--primary-color)' : '#10b981');
+    const badgeEl = document.getElementById('user-role-badge');
+    badgeEl.textContent = badgeText;
+    badgeEl.style.background = badgeColor + '20'; // %20 transparan
+    badgeEl.style.color = badgeColor;
 
     if(fabContainer) {
         fabContainer.classList.remove('hidden');
         fabIcon.className = user.role === 'teacher' ? 'fa-solid fa-plus' : 'fa-solid fa-user-plus';
     }
 
-    if (user.role === 'teacher') {
-        document.getElementById('nav-classes').style.display = 'flex';
-        document.getElementById('nav-assignments').style.display = 'none';
-        document.getElementById('nav-home').style.display = 'flex';
+    // --- MENÜLERİ GİZLE/GÖSTER MANTIĞI ---
+    document.getElementById('nav-classes').style.display = user.role === 'teacher' ? 'flex' : 'none';
+    document.getElementById('nav-home').style.display = user.role === 'teacher' ? 'flex' : 'none';
+    document.getElementById('nav-assignments').style.display = user.role === 'student' ? 'flex' : 'none';
+    
+    // Admin menüleri sadece ve sadece viewMode 'admin' ise gösterilir
+    const showAdminMenus = (realUser.role === 'admin' && user.role === 'admin') ? 'flex' : 'none';
+    document.getElementById('nav-admin-dashboard').style.display = showAdminMenus;
+    document.getElementById('nav-admin-users').style.display = showAdminMenus;
+    document.getElementById('nav-admin-classes').style.display = showAdminMenus;
+
+    // --- AÇILIŞ SAYFASI YÖNLENDİRMESİ ---
+    if (user.role === 'admin') {
+        if(fabContainer) fabContainer.classList.add('hidden'); // Adminde artı butonu olmaz
+        renderAdminDashboard();
+    } else if (user.role === 'teacher') {
         renderDashboardHome();
     } else {
-        document.getElementById('nav-classes').style.display = 'none';
-        document.getElementById('nav-home').style.display = 'none';
-        document.getElementById('nav-assignments').style.display = 'flex';
         renderStudentDashboard('active');
     }
 }
-
 // FAB (Artı Butonu) Mantığı
+// YENİ VE DÜZELTİLMİŞ FAB (Artı Butonu) Mantığı
 let isFabOpen = false;
+
 window.handleFabClick = function(event) {
     if(event) event.stopPropagation();
-    const user = DataManager.getCurrentUser();
     
-    if(user.role === 'teacher') {
+    const realUser = DataManager.getCurrentUser();
+    let currentRole = realUser.role;
+
+    // Eğer Admin isek ve test modundaysak, gerçek rolü değil "maske" rolünü dikkate almalıyız!
+    if (currentRole === 'admin') {
+        currentRole = localStorage.getItem('adminViewMode') || 'admin';
+    }
+    
+    if(currentRole === 'teacher') {
         const options = document.getElementById('fab-options');
         const btn = document.getElementById('fab-button');
         isFabOpen = !isFabOpen;
@@ -332,6 +428,7 @@ window.handleFabClick = function(event) {
             window.closeFab();
         }
     } else {
+        // Öğrenci ise sınıfa katıl modalını aç
         window.openJoinClassModal(event);
     }
 }
@@ -349,13 +446,23 @@ document.addEventListener('click', (e) => {
 });
 
 // İLK BAŞLATMA
+// İLK BAŞLATMA (Hızlandırılmış, Flaşlama Önleyici Sistem)
 async function buluttanIndirVeBaslat() {
-    setupHTMLListeners(); // Tüm butonları ve tıklamaları HTML'e bağla
-    const veri = await fetchBulutVeri(); 
-    syncDataToLocal(veri);               
+    setupHTMLListeners(); // Butonları bağla
     
+    // 1. BEKLEME YOK: Bilgisayarın hafızasındaki veriyle anında ekranı çiz!
     initApp(); 
     setupAuthListeners(initApp); 
+
+    // 2. ARKA PLAN: Ekrana yansıttıktan sonra buluttan güncel veriyi çek
+    try {
+        const veri = await fetchBulutVeri(); 
+        if (veri) {
+            syncDataToLocal(veri);               
+        }
+    } catch (e) {
+        console.log("Bağlantı zayıf, çevrimdışı önbellek ile çalışılıyor.");
+    }
 }
 
 document.addEventListener('DOMContentLoaded', buluttanIndirVeBaslat);

@@ -17,14 +17,21 @@
     <div id="toast-container"></div>
 
     <section id="auth-section" class="active-section">
+        <div class="auth-bg-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+        </div>
+
         <div class="auth-container">
             <div class="auth-header">
-                <h1>A.R.S App</h1>
+                <div class="auth-logo"><i class="fa-solid fa-layer-group"></i></div>
+                <h1>A.R.S <span>App</span></h1>
                 <p>Akıllı Rehberlik Sistemi</p>
             </div>
             
             <div id="login-form-container" class="auth-box">
-                <h2>Giriş Yap</h2>
+                <h2>Hoş Geldin</h2>
                 <form id="login-form">
                     <div class="input-group">
                         <i class="fa-solid fa-user"></i>
@@ -35,13 +42,13 @@
                         <input type="password" id="login-password" placeholder="Şifre" required>
                         <i class="fa-solid fa-eye toggle-password" id="btn-toggle-login-pwd"></i>
                     </div>
-                    <button type="submit" class="btn-primary">Giriş Yap</button>
+                    <button type="submit" class="btn-primary">Sisteme Giriş Yap</button>
                 </form>
-                <p class="switch-auth">Hesabın yok mu? <a href="#" id="link-to-register">Kayıt Ol</a></p>
+                <p class="switch-auth">Hesabın yok mu? <a href="#" id="link-to-register">Hemen Kayıt Ol</a></p>
             </div>
 
             <div id="register-form-container" class="auth-box hidden">
-                <h2>Kayıt Ol</h2>
+                <h2>Hesap Oluştur</h2>
                 <form id="register-form">
                     <div class="role-selector">
                         <label class="radio-label">
@@ -54,30 +61,36 @@
                         </label>
                     </div>
 
-                    <div class="row">
-                        <div class="input-group">
+                    <div class="row" style="display: flex; gap: 15px;">
+                        <div class="input-group" style="flex: 1;">
+                            <i class="fa-solid fa-id-card"></i>
                             <input type="text" id="reg-name" placeholder="Ad" required>
                         </div>
-                        <div class="input-group">
+                        <div class="input-group" style="flex: 1;">
+                            <i class="fa-solid fa-id-card"></i>
                             <input type="text" id="reg-surname" placeholder="Soyad" required>
                         </div>
                     </div>
 
                     <div class="input-group" id="student-no-group" style="display: none;">
+                        <i class="fa-solid fa-hashtag"></i>
                         <input type="text" id="reg-student-no" placeholder="Öğrenci Numarası">
                     </div>
 
                     <div class="input-group">
+                        <i class="fa-solid fa-at"></i>
                         <input type="text" id="reg-username" placeholder="Kullanıcı Adı" required>
                     </div>
                     <div class="input-group">
+                        <i class="fa-solid fa-lock"></i>
                         <input type="password" id="reg-password" placeholder="Şifre" required>
                     </div>
                     <div class="input-group">
+                        <i class="fa-solid fa-shield-halved"></i>
                         <input type="password" id="reg-password-confirm" placeholder="Şifreyi Onayla" required>
                     </div>
 
-                    <button type="submit" class="btn-primary">Hesap Oluştur</button>
+                    <button type="submit" class="btn-primary">Kayıt İşlemini Tamamla</button>
                 </form>
                 <p class="switch-auth">Zaten üye misin? <a href="#" id="link-to-login">Giriş Yap</a></p>
             </div>
@@ -108,10 +121,27 @@
                 <a href="#" class="nav-item" id="nav-assignments" style="display: none;">
                     <div class="nav-icon"><i class="fa-solid fa-book-open"></i></div><span class="nav-text">Ödevlerim</span>
                 </a>
+                <a href="#" class="nav-item" id="nav-admin-dashboard" style="display: none;">
+                    <div class="nav-icon"><i class="fa-solid fa-shield-halved"></i></div><span class="nav-text">Sistem Kokpiti</span>
+                </a>
+                <a href="#" class="nav-item" id="nav-admin-users" style="display: none;">
+                    <div class="nav-icon"><i class="fa-solid fa-users-gear"></i></div><span class="nav-text">Kullanıcı Yönetimi</span>
+                </a>
+                <a href="#" class="nav-item" id="nav-admin-classes" style="display: none;">
+                    <div class="nav-icon"><i class="fa-solid fa-chalkboard-user"></i></div><span class="nav-text">Sınıf Denetimi</span>
+                </a>                
             </nav>
 
             <div class="sidebar-footer">
                 <p class="menu-label">TERCİHLER</p>
+                <div class="footer-item" id="admin-view-switcher" style="display: none; flex-direction: column; gap: 8px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); margin-bottom: 15px;">
+                    <p class="menu-label" style="margin-bottom: 0; font-size: 0.7rem;">GÖRÜNÜM (TEST MODU)</p>
+                    <select id="view-mode-select" onchange="window.changeViewMode(this.value)" style="width: 100%; padding: 8px; border-radius: 8px; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-main); font-weight: 600; cursor: pointer;">
+                        <option value="admin">👑 Admin Modu</option>
+                        <option value="teacher">👨‍🏫 Öğretmen Modu</option>
+                        <option value="student">🎓 Öğrenci Modu</option>
+                    </select>
+                </div>
                 <div class="footer-item theme-row">
                     <div class="row-left"><i class="fa-solid fa-moon" id="sidebar-theme-icon"></i><span id="sidebar-theme-text">Karanlık Mod</span></div>
                     <div id="theme-switch-wrapper"></div> 
@@ -161,23 +191,28 @@
     </div>
 
     <div id="modal-add-assignment" class="modal">
-        <div class="modal-content">
-            <span class="close btn-close-modal" data-target="modal-add-assignment">&times;</span>
-            <h3>Yeni Ödev Ekle</h3>
-            <form id="add-assignment-form">
-                <div class="input-group" id="assignment-class-group">
-                    <select id="assignment-class-select" required style="width: 100%; padding: 12px; border-radius: 16px; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-main); font-weight: 600;"></select>
-                </div>
-                <div class="input-group"><input type="text" id="assignment-title" placeholder="Ödev Başlığı" required></div>
-                <div class="input-group"><textarea id="assignment-desc" placeholder="Ödev Açıklaması..." rows="4" required></textarea></div>
-                <div class="input-group">
-                    <label style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 5px; display: block;">Son Teslim Tarihi:</label>
-                    <input type="date" id="assignment-date" required>
-                </div>
-                <button type="submit" class="btn-primary">Ödevi Yayınla</button>
-            </form>
-        </div>
+    <div class="modal-content">
+        <span class="close btn-close-modal" data-target="modal-add-assignment">&times;</span>
+        <h3>Yeni Ödev Ekle</h3>
+        <form id="add-assignment-form">
+            <div class="input-group" id="assignment-class-group">
+                <select id="assignment-class-select" required style="width: 100%; padding: 12px; border-radius: 16px; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-main); font-weight: 600;"></select>
+            </div>
+            <div class="input-group">
+                <label for="questionCount" style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 5px; display: block;">Hedeflenen Soru Sayısı</label>
+                <input type="number" id="questionCount" min="1" placeholder="Örn: 40" required>
+            </div>
+            <div class="input-group">
+                <input type="text" id="assignment-title" placeholder="Ödev Başlığı (Örn: Üslü Sayılar Testi)" required>
+            </div>
+            <div class="input-group">
+                <label style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 5px; display: block;">Son Teslim Tarihi:</label>
+                <input type="date" id="assignment-date" required>
+            </div>
+            <button type="submit" class="btn-primary">Ödevi Yayınla</button>
+        </form>
     </div>
+</div>
 
     <div id="modal-student-list" class="modal">
         <div class="modal-content">
@@ -231,6 +266,32 @@
             </div>
         </div>
     </div>
+
+    <div id="modal-complete-assignment" class="modal">
+    <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <span class="close btn-close-modal" data-target="modal-complete-assignment">&times;</span>
+            <h3>Ödevi Tamamla</h3>
+            <p style="color: var(--text-muted); margin-bottom: 20px;">Hedef: <strong id="targetQuestionCount" style="color: var(--primary-color); font-size: 1.2rem;">0</strong> Soru</p>
+            
+            <div style="display: flex; gap: 15px; margin-bottom: 20px;">
+                <div class="input-group" style="flex: 1;">
+                    <label style="display: block; text-align: left; margin-bottom: 5px; color: var(--success);"><i class="fa-solid fa-circle-check"></i> Doğru</label>
+                    <input type="number" id="correctCount" min="0" placeholder="0">
+                </div>
+                <div class="input-group" style="flex: 1;">
+                    <label style="display: block; text-align: left; margin-bottom: 5px; color: var(--danger);"><i class="fa-solid fa-circle-xmark"></i> Yanlış</label>
+                    <input type="number" id="wrongCount" min="0" placeholder="0">
+                </div>
+            </div>
+            
+            <p id="validationError" style="color: var(--danger); display: none; font-size: 0.9em; margin-bottom: 15px; text-align: left;">
+                <i class="fa-solid fa-triangle-exclamation"></i> Hata: Doğru ve yanlış toplamı hedef sorudan büyük olamaz!
+            </p>
+            
+            <input type="hidden" id="current-completing-assignment-id">
+            <button class="btn-primary" onclick="window.saveTaskStats()" style="width: 100%;">Kaydet ve Bitir</button>
+        </div>
+    </div>
     
     <div id="theme-toggle-component" class="toggle-switch">
         <input type="checkbox" id="theme-checkbox">
@@ -240,7 +301,22 @@
             <span class="toggle-ball"></span>
         </label>
     </div>
-
+    <div id="modal-admin-user-details" class="modal">
+        <div class="modal-content" style="max-width: 450px;">
+            <span class="close btn-close-modal" data-target="modal-admin-user-details">&times;</span>
+            <h3><i class="fa-solid fa-address-card" style="color: var(--primary-color);"></i> Kullanıcı Özeti</h3>
+            <div id="admin-user-detail-content" style="margin-top: 15px;">
+                </div>
+            <button class="btn-secondary" onclick="window.closeModal('modal-admin-user-details')" style="width: 100%; margin-top: 15px;">Kapat</button>
+        </div>
+    </div>
+    <div id="impersonation-banner" style="display: none; background: #f59e0b; color: #fff; text-align: center; padding: 10px 20px; font-weight: 600; font-size: 0.9rem; z-index: 9999; position: sticky; top: 0; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        <i class="fa-solid fa-triangle-exclamation fa-fade" style="margin-right: 8px;"></i>
+        DİKKAT: Şu an <strong id="impersonate-role-name" style="text-decoration: underline;">Öğrenci</strong> görünümündesiniz. Gerçek verilere müdahale ediyorsunuz!
+        <button onclick="window.exitImpersonation()" style="margin-left: 20px; padding: 5px 15px; background: #fff; color: #f59e0b; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; transition: 0.2s;">
+            <i class="fa-solid fa-power-off"></i> Admin Panele Dön
+        </button>
+    </div>
     
     <script type="module" src="./js/main.js"></script>
 </body>
