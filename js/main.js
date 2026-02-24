@@ -4,9 +4,9 @@ import { DataManager, syncDataToLocal } from './dataManager.js';
 import { fetchBulutVeri } from './firebaseApi.js';
 import { generateId, generateClassCode } from './utils.js';
 import { initTheme, moveThemeButton, showToast, toggleDarkMode, togglePassword, switchAuth, toggleStudentFields, closeModal } from './ui.js';
-import { setupAuthListeners,deleteAccount,updateProfile, updatePassword } from './auth.js';
-import { 
-    renderDashboardHome, 
+import { setupAuthListeners, deleteAccount, updateProfile, updatePassword } from './auth.js';
+import {
+    renderDashboardHome,
     renderTeacherClassesList,
     viewAllClassesStats,
     viewAllStudentsStats,
@@ -21,15 +21,17 @@ import {
     openAssignmentDetailsModal,
     deleteAssignment
 } from './teacherViews.js';
-import { renderStudentDashboard, openCompleteModal, saveTaskStats, 
-    openJoinClassModal, leaveClass } from './studentViews.js';
+import {
+    renderStudentDashboard, openCompleteModal, saveTaskStats,
+    openJoinClassModal, leaveClass
+} from './studentViews.js';
 // adminViews.js'den gelen tüm fonksiyonları eksiksiz içe aktarıyoruz
 // adminViews.js import satırını aynen böyle güncelle:
-import { 
-    renderAdminDashboard, renderUserManagement, renderClassOversight, 
-    changeViewMode, exitImpersonation, filterAdminUsers, 
+import {
+    renderAdminDashboard, renderUserManagement, renderClassOversight,
+    changeViewMode, exitImpersonation, filterAdminUsers,
     openUserDetailsModal, resetUserPassword, deleteUserAsAdmin, deleteClassAsAdmin,
-    renderAssignmentOversight, deleteAssignmentAsAdmin 
+    renderAssignmentOversight, deleteAssignmentAsAdmin
 } from './adminViews.js';
 // ---- GLOBAL PENCEREYE (WINDOW) BAĞLAMA ----
 window.toggleDarkMode = toggleDarkMode;
@@ -93,18 +95,64 @@ function setupHTMLListeners() {
     // ------------------------------------------
     // YENİ: PROFİL AYARLARI VE DANGER ZONE
     // ------------------------------------------
-    
+
+    // --- ELİT TEMA GEÇİŞ MANTIĞI ---
+    // 1. Önce HTML'deki elemanları JavaScript'e tanıtıyoruz
+    const teacherBtn = document.getElementById('teacher-btn'); // Öğretmen butonu
+    const studentBtn = document.getElementById('student-btn'); // Öğrenci butonu
+    const loginBtn = document.getElementById('login-btn');     // Giriş butonu
+    const accentText = document.getElementById('accent-text'); // "Rehberlik" yazısı
+    const authSection = document.getElementById('auth-section'); // En arka plan
+
+    // 2. Desen Tanımları (SVG Kodları)
+    const studentPattern = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 24 24' fill='none' stroke='%233182CE' stroke-width='1' stroke-opacity='0.12' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 14l9-5-9-5-9 5 9 5z'/%3E%3Cpath d='M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z'/%3E%3C/svg%3E")`;
+    const teacherPattern = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 24 24' fill='none' stroke='%23F97316' stroke-width='1' stroke-opacity='0.12' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='7' width='18' height='12' rx='2'/%3E%3Cpath d='M9 7V5a2 2 0 012-2h2a2 2 0 012 2v2'/%3E%3C/svg%3E")`;
+
+    if (teacherBtn && studentBtn) {
+        // ÖĞRETMEN MODU TIKLANDIĞINDA
+        teacherBtn.addEventListener('click', () => {
+            // Arka plan desenini çantalı desene çevir
+            if (authSection) authSection.style.backgroundImage = teacherPattern;
+
+            // "Rehberlik" yazısını turuncuya çevir (Mavi class'ını sil, Turuncu ekle)
+            if (accentText) accentText.classList.replace('text-[#3182CE]', 'text-orange-500');
+
+            // Giriş butonunu turuncu yap
+            if (loginBtn) loginBtn.classList.replace('bg-[#1A202C]', 'bg-orange-600');
+
+            // Butonların aktiflik durumunu güncelle
+            teacherBtn.className = "flex-1 flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl text-xs font-bold text-white bg-orange-500 shadow-lg transition-all";
+            studentBtn.className = "flex-1 flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl text-xs font-bold text-gray-500 hover:text-gray-700 transition-all";
+        });
+
+        // ÖĞRENCİ MODU TIKLANDIĞINDA
+        studentBtn.addEventListener('click', () => {
+            // Arka plan desenini kepli desene çevir
+            if (authSection) authSection.style.backgroundImage = studentPattern;
+
+            // "Rehberlik" yazısını maviye geri çevir
+            if (accentText) accentText.classList.replace('text-orange-500', 'text-[#3182CE]');
+
+            // Giriş butonunu koyu laciverte geri çevir
+            if (loginBtn) loginBtn.classList.replace('bg-orange-600', 'bg-[#1A202C]');
+
+            // Butonların aktiflik durumunu güncelle
+            studentBtn.className = "flex-1 flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl text-xs font-bold text-white bg-[#3182CE] shadow-lg transition-all";
+            teacherBtn.className = "flex-1 flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl text-xs font-bold text-gray-500 hover:text-gray-700 transition-all";
+        });
+    }
+
     // 1. Profil Kartına Tıklayınca Ayarları Aç ve İçini Doldur
     const btnProfileSettings = document.getElementById('btn-profile-settings');
     if (btnProfileSettings) {
         btnProfileSettings.addEventListener('click', () => {
             const user = DataManager.getCurrentUser();
-            if(user) {
+            if (user) {
                 document.getElementById('set-name').value = user.name;
                 document.getElementById('set-surname').value = user.surname;
                 document.getElementById('set-new-password').value = '';
                 document.getElementById('set-new-password-confirm').value = '';
-                if(typeof window.closeFab === 'function') window.closeFab(); // Varsa Speed Dial'ı kapat
+                if (typeof window.closeFab === 'function') window.closeFab(); // Varsa Speed Dial'ı kapat
                 document.getElementById('modal-profile-settings').style.display = 'flex';
             }
         });
@@ -117,7 +165,7 @@ function setupHTMLListeners() {
             e.preventDefault();
             const name = document.getElementById('set-name').value.trim();
             const surname = document.getElementById('set-surname').value.trim();
-            if(window.updateProfile(name, surname)) {
+            if (window.updateProfile(name, surname)) {
                 window.showToast('Profil bilgileri güncellendi.', 'success');
                 // Sayfayı yenilemeden sol menüdeki ismi anında güncelle:
                 const user = DataManager.getCurrentUser();
@@ -134,11 +182,11 @@ function setupHTMLListeners() {
             e.preventDefault();
             const p1 = document.getElementById('set-new-password').value;
             const p2 = document.getElementById('set-new-password-confirm').value;
-            if(p1 !== p2) {
+            if (p1 !== p2) {
                 window.showToast('Şifreler uyuşmuyor!', 'error');
                 return;
             }
-            if(window.updatePassword(p1)) {
+            if (window.updatePassword(p1)) {
                 window.showToast('Şifreniz başarıyla güncellendi.', 'success');
                 document.getElementById('set-new-password').value = '';
                 document.getElementById('set-new-password-confirm').value = '';
@@ -148,7 +196,7 @@ function setupHTMLListeners() {
 
     // 4. Yeni Tehlikeli Bölge (Hesabı Sil) Butonu
     const btnModalDeleteAccount = document.getElementById('btn-modal-delete-account');
-    if(btnModalDeleteAccount) {
+    if (btnModalDeleteAccount) {
         btnModalDeleteAccount.addEventListener('click', window.deleteAccount);
     }
 
@@ -216,21 +264,21 @@ function setupHTMLListeners() {
         e.preventDefault();
         const select = document.getElementById('assignment-class-select');
         const finalClassId = select.dataset.selected || select.value;
-        if(!finalClassId) { window.showToast('Lütfen bir sınıf seçin!', 'error'); return; }
+        if (!finalClassId) { window.showToast('Lütfen bir sınıf seçin!', 'error'); return; }
 
         const assignments = DataManager.getAssignments();
         const newAsg = {
-            id: generateId(), 
+            id: generateId(),
             classId: finalClassId,
-            title: document.getElementById('assignment-title').value, 
+            title: document.getElementById('assignment-title').value,
             questionCount: parseInt(document.getElementById('questionCount').value) || 0, // YENİ: Soru sayısını kaydet
-            dueDate: document.getElementById('assignment-date').value, 
+            dueDate: document.getElementById('assignment-date').value,
             createdAt: new Date().toLocaleDateString()
         };
         assignments.push(newAsg); DataManager.setAssignments(assignments);
         window.closeModal('modal-add-assignment');
         window.showToast('Ödev öğrencilere gönderildi.', 'success');
-        
+
         const currentNav = document.querySelector('.nav-item.active');
         if (currentNav && currentNav.id === 'nav-classes') window.renderTeacherClassesList();
         else if (currentNav && currentNav.id === 'nav-home') window.renderDashboardHome();
@@ -247,20 +295,20 @@ function setupHTMLListeners() {
         const users = DataManager.getUsers();
         const currentUser = DataManager.getCurrentUser();
         const userIndex = users.findIndex(u => u.id === currentUser.id);
-        
+
         if (!users[userIndex].enrolledClasses) users[userIndex].enrolledClasses = [];
         if (users[userIndex].enrolledClasses.includes(targetClass.id)) { window.showToast('Bu sınıfa zaten katıldınız.', 'info'); return; }
 
         // Sınıfa kaydet
         users[userIndex].enrolledClasses.push(targetClass.id);
         DataManager.setUsers(users);
-        DataManager.setCurrentUser(users[userIndex]); 
+        DataManager.setCurrentUser(users[userIndex]);
 
         // --- YENİ: GEÇMİŞ ÖDEVLERDEN OTOMATİK MUAF TUTMA SİSTEMİ ---
         const allAssignments = DataManager.getAssignments().filter(a => a.classId === targetClass.id);
         let submissions = DataManager.getSubmissions();
         const today = new Date();
-        today.setHours(0,0,0,0);
+        today.setHours(0, 0, 0, 0);
         let addedExemptions = false;
 
         allAssignments.forEach(a => {
@@ -278,19 +326,53 @@ function setupHTMLListeners() {
             }
         });
 
-        if(addedExemptions) DataManager.setSubmissions(submissions);
+        if (addedExemptions) DataManager.setSubmissions(submissions);
         // ---------------------------------------------------------
 
         window.closeModal('modal-join-class');
         window.showToast(`"${targetClass.name}" sınıfına katıldınız! Eski ödevlerden muaf tutuldunuz.`, 'success');
         window.renderStudentDashboard('active');
     });
+
+    if (teacherBtn && studentBtn) {
+        // ÖĞRETMEN MODUNA GEÇİŞ
+        teacherBtn.addEventListener('click', () => {
+            // Buton Renkleri
+            teacherBtn.classList.add('bg-orange-500', 'text-white', 'shadow-lg');
+            teacherBtn.classList.remove('text-gray-500');
+            studentBtn.classList.remove('bg-[#3182CE]', 'text-white', 'shadow-lg');
+            studentBtn.classList.add('text-gray-500');
+
+            // Tema Renkleri
+            if (loginBtn) loginBtn.classList.replace('bg-[#1A202C]', 'bg-orange-600');
+            if (accentText) accentText.classList.replace('text-[#3182CE]', 'text-orange-500');
+
+            // Arka Plan Deseni (Turuncu)
+            document.documentElement.style.setProperty('--pattern-image', `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 24 24' fill='none' stroke='%23F97316' stroke-width='1.5' stroke-opacity='0.1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z'/%3E%3C/svg%3E")`);
+        });
+
+        // ÖĞRENCİ MODUNA GEÇİŞ
+        studentBtn.addEventListener('click', () => {
+            // Buton Renkleri
+            studentBtn.classList.add('bg-[#3182CE]', 'text-white', 'shadow-lg');
+            studentBtn.classList.remove('text-gray-500');
+            teacherBtn.classList.remove('bg-orange-500', 'text-white', 'shadow-lg');
+            teacherBtn.classList.add('text-gray-500');
+
+            // Tema Renkleri
+            if (loginBtn) loginBtn.classList.replace('bg-orange-600', 'bg-[#1A202C]');
+            if (accentText) accentText.classList.replace('text-orange-500', 'text-[#3182CE]');
+
+            // Arka Plan Deseni (Mavi)
+            document.documentElement.style.setProperty('--pattern-image', `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 24 24' fill='none' stroke='%233182CE' stroke-width='1.5' stroke-opacity='0.1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 14l9-5-9-5-9 5 9 5z'/%3E%3Cpath d='M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z'/%3E%3Cpath d='M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222'/%3E%3C/svg%3E")`);
+        });
+    }
 }
 
 // Modal dışına tıklayınca kapatma
-window.onclick = function(event) { 
+window.onclick = function (event) {
     if (event.target.classList.contains('modal')) {
-        event.target.style.display = "none"; 
+        event.target.style.display = "none";
     }
 };
 
@@ -308,19 +390,19 @@ function initApp() {
     const dateOpts = { weekday: 'long', day: 'numeric', month: 'long' };
     const dateStr = new Date().toLocaleDateString('tr-TR', dateOpts);
     const dateEl = document.getElementById('current-date');
-    if(dateEl) dateEl.textContent = dateStr;
-    
-    initTheme(); 
+    if (dateEl) dateEl.textContent = dateStr;
+
+    initTheme();
     const realUser = DataManager.getCurrentUser();
     let user = realUser; // İşlem görecek kullanıcı
     const fabContainer = document.getElementById('fab-container');
     const fabIcon = document.getElementById('fab-icon');
-    
+
     if (!realUser) {
-        moveThemeButton('auth'); 
+        moveThemeButton('auth');
         document.getElementById('auth-section').classList.add('active-section');
         document.getElementById('dashboard-section').classList.remove('active-section');
-        if(fabContainer) fabContainer.classList.add('hidden');
+        if (fabContainer) fabContainer.classList.add('hidden');
         return;
     }
 
@@ -348,7 +430,7 @@ function initApp() {
         return;
     }
 
-    moveThemeButton('dashboard'); 
+    moveThemeButton('dashboard');
     document.getElementById('auth-section').classList.remove('active-section');
     document.getElementById('auth-section').classList.add('hidden-section');
     document.getElementById('dashboard-section').classList.remove('hidden-section');
@@ -356,7 +438,7 @@ function initApp() {
 
     document.getElementById('user-fullname').textContent = `${realUser.name} ${realUser.surname}`; // İsim hep gerçek kalır
     document.getElementById('user-avatar').textContent = (realUser.name.charAt(0) + realUser.surname.charAt(0)).toUpperCase();
-    
+
     // Rozet rengi ve ismini ayarla
     let badgeText = user.role === 'teacher' ? 'Öğretmen' : (user.role === 'student' ? 'Öğrenci' : 'Sistem Yöneticisi');
     let badgeColor = user.role === 'admin' ? '#f59e0b' : (user.role === 'teacher' ? 'var(--primary-color)' : '#10b981');
@@ -365,7 +447,7 @@ function initApp() {
     badgeEl.style.background = badgeColor + '20'; // %20 transparan
     badgeEl.style.color = badgeColor;
 
-    if(fabContainer) {
+    if (fabContainer) {
         fabContainer.classList.remove('hidden');
         fabIcon.className = user.role === 'teacher' ? 'fa-solid fa-plus' : 'fa-solid fa-user-plus';
     }
@@ -374,7 +456,7 @@ function initApp() {
     document.getElementById('nav-classes').style.display = user.role === 'teacher' ? 'flex' : 'none';
     document.getElementById('nav-home').style.display = user.role === 'teacher' ? 'flex' : 'none';
     document.getElementById('nav-assignments').style.display = user.role === 'student' ? 'flex' : 'none';
-    
+
     // Admin menüleri sadece ve sadece viewMode 'admin' ise gösterilir
     const showAdminMenus = (realUser.role === 'admin' && user.role === 'admin') ? 'flex' : 'none';
     document.getElementById('nav-admin-dashboard').style.display = showAdminMenus;
@@ -383,7 +465,7 @@ function initApp() {
 
     // --- AÇILIŞ SAYFASI YÖNLENDİRMESİ ---
     if (user.role === 'admin') {
-        if(fabContainer) fabContainer.classList.add('hidden'); // Adminde artı butonu olmaz
+        if (fabContainer) fabContainer.classList.add('hidden'); // Adminde artı butonu olmaz
         renderAdminDashboard();
     } else if (user.role === 'teacher') {
         renderDashboardHome();
@@ -395,9 +477,9 @@ function initApp() {
 // YENİ VE DÜZELTİLMİŞ FAB (Artı Butonu) Mantığı
 let isFabOpen = false;
 
-window.handleFabClick = function(event) {
-    if(event) event.stopPropagation();
-    
+window.handleFabClick = function (event) {
+    if (event) event.stopPropagation();
+
     const realUser = DataManager.getCurrentUser();
     let currentRole = realUser.role;
 
@@ -405,13 +487,13 @@ window.handleFabClick = function(event) {
     if (currentRole === 'admin') {
         currentRole = localStorage.getItem('adminViewMode') || 'admin';
     }
-    
-    if(currentRole === 'teacher') {
+
+    if (currentRole === 'teacher') {
         const options = document.getElementById('fab-options');
         const btn = document.getElementById('fab-button');
         isFabOpen = !isFabOpen;
-        
-        if(isFabOpen) {
+
+        if (isFabOpen) {
             options.innerHTML = `
                 <div class="fab-option-wrapper" onclick="window.openAddAssignmentModalDirect(event)">
                     <span class="fab-label">Yeni Ödev Ver</span>
@@ -433,32 +515,32 @@ window.handleFabClick = function(event) {
     }
 }
 
-window.closeFab = function() {
+window.closeFab = function () {
     isFabOpen = false;
     const options = document.getElementById('fab-options');
     const btn = document.getElementById('fab-button');
-    if(options) options.classList.remove('open');
-    if(btn) btn.classList.remove('open');
+    if (options) options.classList.remove('open');
+    if (btn) btn.classList.remove('open');
 }
 
 document.addEventListener('click', (e) => {
-    if(isFabOpen && !e.target.closest('.fab-container')) window.closeFab();
+    if (isFabOpen && !e.target.closest('.fab-container')) window.closeFab();
 });
 
 // İLK BAŞLATMA
 // İLK BAŞLATMA (Hızlandırılmış, Flaşlama Önleyici Sistem)
 async function buluttanIndirVeBaslat() {
     setupHTMLListeners(); // Butonları bağla
-    
+
     // 1. BEKLEME YOK: Bilgisayarın hafızasındaki veriyle anında ekranı çiz!
-    initApp(); 
-    setupAuthListeners(initApp); 
+    initApp();
+    setupAuthListeners(initApp);
 
     // 2. ARKA PLAN: Ekrana yansıttıktan sonra buluttan güncel veriyi çek
     try {
-        const veri = await fetchBulutVeri(); 
+        const veri = await fetchBulutVeri();
         if (veri) {
-            syncDataToLocal(veri);               
+            syncDataToLocal(veri);
         }
     } catch (e) {
         console.log("Bağlantı zayıf, çevrimdışı önbellek ile çalışılıyor.");
@@ -470,7 +552,7 @@ document.addEventListener('DOMContentLoaded', buluttanIndirVeBaslat);
 // ARKA PLAN SENKRONİZASYONU
 setInterval(async () => {
     const user = DataManager.getCurrentUser();
-    if (!user) return; 
+    if (!user) return;
 
     const isModalOpen = Array.from(document.querySelectorAll('.modal')).some(m => m.style.display === 'flex');
     if (isModalOpen) return;
@@ -493,7 +575,7 @@ setInterval(async () => {
                 else if (currentNav && currentNav.id === 'nav-classes') renderTeacherClassesList();
                 else if (currentNav && currentNav.id === 'nav-assignments') {
                     const activeTabBtn = document.querySelector('.segment-btn.active');
-                    if(activeTabBtn) {
+                    if (activeTabBtn) {
                         let currentTab = 'active';
                         if (activeTabBtn.textContent.includes('Tamamlananlar')) currentTab = 'completed';
                         if (activeTabBtn.textContent.includes('Dolanlar')) currentTab = 'missed';

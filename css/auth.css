@@ -3,15 +3,23 @@
    (Kasmaz Arka Plan & %100 Çalışan Kaydırma)
    ======================================================== */
 
+/* auth.css - GÜNCELLENMİŞ VE MERKEZLENMİŞ */
 #auth-section {
     position: relative;
-    min-height: 100vh; /* height yerine min-height yapıldı */
-    display: block; /* Flex'in kesme hatasını engeller */
-    background-color: var(--bg-color); 
-    padding: 1px; /* margin collapsing önlemek için */
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #F8FAFC; /* Hafif elit gri zemin */
+    /* Desen geçişi için yumuşatma efekti */
+    transition: background-image 0.6s ease-in-out; 
+    background-repeat: repeat;
+    background-size: 80px 80px;
     z-index: 1;
 }
 
+/* Eğer varsa eski bulanık daireleri (auth-bg-shapes) gizle veya sil ki deseni kapatmasın */
+.auth-bg-shapes { display: none; }
 /* YENİ: Giriş ekranına özel şık kaydırma çubuğu */
 #auth-section::-webkit-scrollbar { width: 6px; }
 #auth-section::-webkit-scrollbar-track { background: transparent; }
