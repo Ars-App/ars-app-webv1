@@ -18,7 +18,7 @@
         :root {
             --pattern-color: #3182CE;
             /* Varsayılan Mavi */
-            --pattern-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 24 24' fill='none' stroke='%233182CE' stroke-width='1.5' stroke-opacity='0.1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 14l9-5-9-5-9 5 9 5z'/%3E%3Cpath d='M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z'/%3E%3Cpath d='M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222'/%3E%3C/svg%3E");
+            --pattern-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 24 24' fill='none' stroke='%233182CE' stroke-width='1.5' stroke-opacity='0.1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 14l9-5-9-5-9 5 9 5z'/%3E%3Cpath d='M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z'/%3E%3C/svg%3E");
         }
 
         .bg-pattern {
@@ -48,7 +48,6 @@
                     <h1 class="text-3xl md:text-5xl font-bold leading-tight mb-6 tracking-tight">
                         Eğitimde Veri Odaklı <br>
                         <span id="accent-text" class="text-[#3182CE] transition-all duration-500">Rehberlik</span>
-                        Dönemi.
                     </h1>
                     <p class="text-gray-400 text-lg md:text-xl leading-relaxed max-w-md">
                         Öğrenci gelişimini analiz edin, akademik başarıyı profesyonel araçlarla optimize edin.
@@ -114,9 +113,50 @@
                 <div id="register-form-container" class="hidden">
                     <h2 class="text-3xl font-bold text-gray-800 mb-6">Hesap Oluştur</h2>
                     <form id="register-form" class="space-y-4">
-                        <button type="submit"
-                            class="w-full bg-[#3182CE] text-white font-bold py-4 rounded-xl shadow-lg mt-4">Kayıt
-                            İşlemini Tamamla</button>
+                        <div
+                            class="flex items-center justify-between bg-gray-50 p-2 rounded-2xl border border-gray-100 mb-6">
+                            <label class="flex-1">
+                                <input type="radio" name="role" value="student" checked
+                                    onchange="toggleStudentFields(); updateAuthTheme('student')" class="hidden peer">
+                                <div
+                                    class="text-center py-3 rounded-xl cursor-pointer transition-all peer-checked:bg-[#3182CE] peer-checked:text-white text-gray-500 font-bold text-xs uppercase tracking-widest">
+                                    <i class="fa-solid fa-graduation-cap mr-2"></i> Öğrenci
+                                </div>
+                            </label>
+                            <label class="flex-1">
+                                <input type="radio" name="role" value="teacher"
+                                    onchange="toggleStudentFields(); updateAuthTheme('teacher')" class="hidden peer">
+                                <div
+                                    class="text-center py-3 rounded-xl cursor-pointer transition-all peer-checked:bg-orange-500 peer-checked:text-white text-gray-500 font-bold text-xs uppercase tracking-widest">
+                                    <i class="fa-solid fa-briefcase mr-2"></i> Öğretmen
+                                </div>
+                            </label>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <div class="flex-1">
+                                <input type="text" id="reg-name" placeholder="Ad" required
+                                    class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl outline-none focus:border-[#3182CE] text-gray-700 font-medium transition-all">
+                            </div>
+                            <div class="flex-1">
+                                <input type="text" id="reg-surname" placeholder="Soyad" required
+                                    class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl outline-none focus:border-[#3182CE] text-gray-700 font-medium transition-all">
+                            </div>
+                        </div>
+
+                        <input type="text" id="reg-username" placeholder="Kullanıcı Adı" required
+                            class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl outline-none focus:border-[#3182CE] text-gray-700 font-medium transition-all">
+
+                        <input type="password" id="reg-password" placeholder="Şifre" required
+                            class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl outline-none focus:border-[#3182CE] text-gray-700 font-medium transition-all">
+
+                        <input type="password" id="reg-password-confirm" placeholder="Şifre (Tekrar)" required
+                            class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl outline-none focus:border-[#3182CE] text-gray-700 font-medium transition-all">
+
+                        <button id="reg-submit-btn" type="submit"
+                            class="w-full bg-[#3182CE] text-white font-bold py-5 rounded-2xl hover:bg-[#2c71b3] shadow-lg transition-all mt-2">
+                            Kayıt İşlemini Tamamla
+                        </button>
                     </form>
                     <p class="mt-6 text-center text-gray-500">Zaten üye misin? <a href="#" id="link-to-login"
                             class="text-[#3182CE] font-bold hover:underline">Giriş Yap</a></p>

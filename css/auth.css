@@ -10,12 +10,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #F8FAFC;
-    /* BAŞLANGIÇ DESENİ (Öğrenci Kepi) */
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 24 24' fill='none' stroke='%233182CE' stroke-width='1.2' stroke-opacity='0.12' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 14l9-5-9-5-9 5 9 5z'/%3E%3Cpath d='M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z'/%3E%3C/svg%3E");
+    background-color: #F8FAFC; 
+    /* BURAYI GÜNCELLE: Sabit resim yerine değişken kullanıyoruz */
+    background-image: var(--pattern-image);
+    transition: background-image 0.4s ease-in-out; 
     background-repeat: repeat;
     background-size: 80px 80px;
-    transition: background-image 0.6s ease-in-out;
     z-index: 1;
 }
 

@@ -36,7 +36,7 @@ export function setupAuthListeners(onSuccessCallback) {
                 surname: document.getElementById('reg-surname').value,
                 username, 
                 password: password,
-                studentNo: role === 'student' ? document.getElementById('reg-student-no').value : null,
+                studentNo: null,
                 enrolledClasses: []
             };
             

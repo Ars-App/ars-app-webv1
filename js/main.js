@@ -3,7 +3,7 @@
 import { DataManager, syncDataToLocal } from './dataManager.js';
 import { fetchBulutVeri } from './firebaseApi.js';
 import { generateId, generateClassCode } from './utils.js';
-import { initTheme, moveThemeButton, showToast, toggleDarkMode, togglePassword, switchAuth, toggleStudentFields, closeModal } from './ui.js';
+import { initTheme, moveThemeButton, showToast, toggleDarkMode, togglePassword, switchAuth, toggleStudentFields, closeModal, updateAuthTheme } from './ui.js';
 import { setupAuthListeners, deleteAccount, updateProfile, updatePassword } from './auth.js';
 import {
     renderDashboardHome,
@@ -39,6 +39,7 @@ window.togglePassword = togglePassword;
 window.switchAuth = switchAuth;
 window.toggleStudentFields = toggleStudentFields;
 window.closeModal = closeModal;
+window.updateAuthTheme = updateAuthTheme;
 window.showToast = showToast;
 window.renderDashboardHome = renderDashboardHome;
 window.renderTeacherClassesList = renderTeacherClassesList;
@@ -207,12 +208,29 @@ function setupHTMLListeners() {
     const togglePwdBtn = document.getElementById('btn-toggle-login-pwd');
     if (togglePwdBtn) togglePwdBtn.addEventListener('click', () => window.togglePassword('login-password'));
 
-    // 3. Giriş / Kayıt Arası Geçiş Linkleri
+    // 3. Giriş / Kayıt Arası Geçiş Linkleri (Geliştirilmiş Versiyon)
     const linkRegister = document.getElementById('link-to-register');
     const linkLogin = document.getElementById('link-to-login');
-    if (linkRegister) linkRegister.addEventListener('click', (e) => { e.preventDefault(); window.switchAuth('register'); });
-    if (linkLogin) linkLogin.addEventListener('click', (e) => { e.preventDefault(); window.switchAuth('login'); });
 
+    if (linkRegister) {
+        linkRegister.onclick = (e) => {
+            e.preventDefault();
+            window.switchAuth('register');
+            // Ekran değiştiğinde temayı tazeleyelim
+            const currentRole = document.querySelector('input[name="role"]:checked').value;
+            window.updateAuthTheme(currentRole);
+        };
+    }
+
+    if (linkLogin) {
+        linkLogin.onclick = (e) => {
+            e.preventDefault();
+            window.switchAuth('login');
+            // Giriş ekranına dönünce varsayılan (öğrenci/mavi) temayı tazeleyelim
+            window.updateAuthTheme('student');
+        };
+    }
+    
     // 4. Öğrenci/Öğretmen Seçimi Değişince Numarayı Göster/Gizle
     const roleRadios = document.querySelectorAll('input[name="role"]');
     roleRadios.forEach(radio => radio.addEventListener('change', window.toggleStudentFields));
