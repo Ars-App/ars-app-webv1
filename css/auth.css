@@ -10,15 +10,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #F8FAFC; /* Hafif elit gri zemin */
-    /* Desen geçişi için yumuşatma efekti */
-    transition: background-image 0.6s ease-in-out; 
+    background-color: #F8FAFC;
+    /* BAŞLANGIÇ DESENİ (Öğrenci Kepi) */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 24 24' fill='none' stroke='%233182CE' stroke-width='1.2' stroke-opacity='0.12' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 14l9-5-9-5-9 5 9 5z'/%3E%3Cpath d='M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z'/%3E%3C/svg%3E");
     background-repeat: repeat;
     background-size: 80px 80px;
+    transition: background-image 0.6s ease-in-out;
     z-index: 1;
 }
 
-/* Eğer varsa eski bulanık daireleri (auth-bg-shapes) gizle veya sil ki deseni kapatmasın */
+/* ESKİ BULANIK ŞEKİLLERİ SİLİYORUZ (Deseni kapatmasınlar) */
 .auth-bg-shapes { display: none; }
 /* YENİ: Giriş ekranına özel şık kaydırma çubuğu */
 #auth-section::-webkit-scrollbar { width: 6px; }
@@ -63,6 +64,8 @@
 .auth-box { background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.6); padding: 40px; border-radius: 28px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1); animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
 [data-theme="dark"] .auth-box { background: rgba(30, 41, 59, 0.65); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4); }
 .auth-box h2 { font-size: 1.6rem; color: var(--text-main); margin-bottom: 25px; text-align: center; font-weight: 800; letter-spacing: -0.5px; }
+
+
 
 .input-group { position: relative; margin-bottom: 20px; }
 .input-group i { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 1.1rem; transition: 0.3s; z-index: 2;}
